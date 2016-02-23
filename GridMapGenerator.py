@@ -4,7 +4,7 @@ import numpy as np
 
 import math
 
-DEPTH = 16
+DEPTH = 14
 WIDTH = 2 ** DEPTH
 SCATTER_PLOT = False
 GRID_PLOT = False
@@ -86,7 +86,7 @@ for point in dat_xy:
         y_filtered.append(y1)
 
 x_res = x_diff / WIDTH
-y_res = x_diff / WIDTH
+y_res = y_diff / WIDTH
 
 map = [[0 for i in range(WIDTH)] for i in range(WIDTH)]
 
