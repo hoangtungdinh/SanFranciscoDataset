@@ -8,7 +8,7 @@ DEPTH = 16
 WIDTH = 2 ** DEPTH
 SCATTER_PLOT = False
 GRID_PLOT = False
-ALTITUDE = 30
+ALTITUDE = 30000 # millimeters
 
 fileName = 'san_francisco.csv'
 
@@ -27,19 +27,20 @@ with open(fileName) as f:
 
 lambda_radian_0 = math.radians(lambda_0)
 
-R = 6371000  # Earth radius in meters
+R = 6371000 * 1000  # Earth radius in millimeters
 
 dat_xy = []
 y_min = float('inf')
 
 for point in data:
+    # everything now is in millimeters
     x0 = R * (math.radians(point[1]) - lambda_radian_0)
     y0 = R * math.log(math.tan(math.pi / 4 + math.radians(point[0]) / 2))
 
     x1 = R * (math.radians(point[3]) - lambda_radian_0)
     y1 = R * math.log(math.tan(math.pi / 4 + math.radians(point[2]) / 2))
 
-    height = point[4] * 0.3048  # feet to meters
+    height = point[4] * 0.3048 * 1000 # feet to millimeters
 
     dat_xy.append((x0, y0, x1, y1, height))
 
@@ -87,7 +88,7 @@ for point in dat_xy:
 x_res = x_diff / WIDTH
 y_res = x_diff / WIDTH
 
-map = [[0 for x in range(WIDTH)] for x in range(WIDTH)]
+map = [[0 for i in range(WIDTH)] for i in range(WIDTH)]
 
 for square in dat_normalized:
     if square[4] <= ALTITUDE:
