@@ -7,7 +7,8 @@ import math
 DEPTH = 14
 WIDTH = 2 ** DEPTH
 SCATTER_PLOT = False
-GRID_PLOT = False
+GRID_PLOT = True
+WRITE_TO_FILE = False
 ALTITUDE = 30000 # millimeters
 
 fileName = 'san_francisco.csv'
@@ -105,14 +106,15 @@ for square in dat_normalized:
 
 print(x_res, y_res)
 
-f = open('sanfrancisco.txt', 'w')
-f.write('%d\n' % DEPTH)
-f.write('%d\t%d\n' % (round(x_res), round(y_res)))
+if WRITE_TO_FILE:
+    f = open('sanfrancisco.txt', 'w')
+    f.write('%d\n' % DEPTH)
+    f.write('%d\t%d\n' % (round(x_res), round(y_res)))
 
-for x in range(WIDTH):
-    for y in range(WIDTH):
-        f.write('%d %d %d\n' % (x, y, map[x][y]))
-f.close()
+    for x in range(WIDTH):
+        for y in range(WIDTH):
+            f.write('%d %d %d\n' % (x, y, map[x][y]))
+    f.close()
 
 if SCATTER_PLOT:
     plt.figure(1)
@@ -124,6 +126,7 @@ if GRID_PLOT:
     plt.figure(2)
     plt.imshow(np.rot90(numpy_map), interpolation='nearest')
     plt.grid(True)
+    plt.savefig('gridmap.png', format='png')
 
 if SCATTER_PLOT or GRID_PLOT:
     plt.show()
