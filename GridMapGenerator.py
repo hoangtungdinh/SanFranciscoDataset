@@ -25,10 +25,11 @@ def valid_pair(map, resolution, origin, destination):
     return True
 
 if __name__ == '__main__':
-    DEPTH = 14
+    DEPTH = 13
     WIDTH = 2 ** DEPTH
     SCATTER_PLOT = False
-    GRID_PLOT = False
+    GRID_PLOT = True
+    OD_PLOT = True
     WRITE_TO_FILE = False
     GENERATE_OD = 30
     ALTITUDE = 30000 # millimeters
@@ -138,6 +139,8 @@ if __name__ == '__main__':
 
     if GENERATE_OD > 0:
         od = []
+        od_x = []
+        od_y = []
         random.seed(111)
         row_origin = random.randrange(WIDTH)
         col_origin = random.randrange(WIDTH)
@@ -150,8 +153,16 @@ if __name__ == '__main__':
                 col_origin = random.randrange(WIDTH)
                 row_destination = random.randrange(WIDTH)
                 col_destination = random.randrange(WIDTH)
+
             od.append((row_origin*round(x_res), col_origin*round(y_res), row_destination*round(x_res),
                        col_destination*round(y_res)))
+
+            od_x.append(row_origin*round(x_res))
+            od_x.append(row_destination*round(x_res))
+
+            od_y.append(col_origin*round(y_res))
+            od_y.append(col_destination*round(y_res))
+
             pairFile = open('SanFranciscoODs.txt', 'w')
             for pair in od:
                 pairFile.write('%d\t%d\t%d\t%d\n' % (pair[0], pair[1], pair[2], pair[3]))
@@ -167,7 +178,9 @@ if __name__ == '__main__':
         plt.figure(2)
         plt.imshow(np.rot90(numpy_map), interpolation='nearest')
         plt.grid(True)
-        plt.savefig('gridmap.png', format='png')
+        if OD_PLOT:
+            plt.scatter(od_x, od_y, color='green')
+        plt.savefig('gridmap.pdf', format='pdf', dpi=4000)
 
     if SCATTER_PLOT or GRID_PLOT:
         plt.show()
