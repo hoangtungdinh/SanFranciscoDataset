@@ -139,14 +139,13 @@ if __name__ == '__main__':
 
     if GENERATE_OD > 0:
         od = []
-        od_x = []
-        od_y = []
         random.seed(111)
-        row_origin = random.randrange(WIDTH)
-        col_origin = random.randrange(WIDTH)
-        row_destination = random.randrange(WIDTH)
-        col_destination = random.randrange(WIDTH)
         for i in range(GENERATE_OD):
+            row_origin = random.randrange(WIDTH)
+            col_origin = random.randrange(WIDTH)
+            row_destination = random.randrange(WIDTH)
+            col_destination = random.randrange(WIDTH)
+
             while not valid_pair(map, (round(x_res), round(y_res)), (row_origin, col_origin),
                                  (row_destination, col_destination)):
                 row_origin = random.randrange(WIDTH)
@@ -157,11 +156,9 @@ if __name__ == '__main__':
             od.append((row_origin*round(x_res), col_origin*round(y_res), row_destination*round(x_res),
                        col_destination*round(y_res)))
 
-            od_x.append(row_origin*round(x_res))
-            od_x.append(row_destination*round(x_res))
-
-            od_y.append(col_origin*round(y_res))
-            od_y.append(col_destination*round(y_res))
+            if OD_PLOT:
+                map[row_origin][col_origin] = 0.5
+                map[row_destination][col_destination] = 0.5
 
             pairFile = open('SanFranciscoODs.txt', 'w')
             for pair in od:
@@ -178,9 +175,4 @@ if __name__ == '__main__':
         plt.figure(2)
         plt.imshow(np.rot90(numpy_map), interpolation='nearest')
         plt.grid(True)
-        if OD_PLOT:
-            plt.scatter(od_x, od_y, color='green')
-        plt.savefig('gridmap.pdf', format='pdf', dpi=4000)
-
-    if SCATTER_PLOT or GRID_PLOT:
-        plt.show()
+        plt.savefig('gridmap.pdf', format='pdf', dpi=1000)
