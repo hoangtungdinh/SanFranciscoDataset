@@ -130,7 +130,7 @@ if __name__ == '__main__':
     if WRITE_TO_FILE:
         f = open('sanfrancisco.txt', 'w')
         f.write('%d\n' % DEPTH)
-        f.write('%d\t%d\n' % (round(x_res), round(y_res)))
+        f.write('%d %d\n' % (round(x_res), round(y_res)))
 
         for x in range(WIDTH):
             for y in range(WIDTH):
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
             pairFile = open('SanFranciscoODs.txt', 'w')
             for pair in od:
-                pairFile.write('%d\t%d\t%d\t%d\n' % (pair[0], pair[1], pair[2], pair[3]))
+                pairFile.write('%d %d %d %d\n' % (pair[0], pair[1], pair[2], pair[3]))
             pairFile.close()
 
     if SCATTER_PLOT:
