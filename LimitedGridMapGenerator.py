@@ -25,13 +25,13 @@ def valid_pair(map, resolution, origin, destination):
     return True
 
 if __name__ == '__main__':
-    DEPTH = 13
+    DEPTH = 11
     WIDTH = 2 ** DEPTH
     SCATTER_PLOT = False
     GRID_PLOT = True
     OD_PLOT = True
     WRITE_TO_FILE = False
-    GENERATE_OD = 30
+    GENERATE_OD = 300
     ALTITUDE = 30000 # millimeters
 
     fileName = 'san_francisco.csv'
@@ -78,8 +78,10 @@ if __name__ == '__main__':
 
     dat_normalized = []
 
-    x_diff = 0
-    y_diff = 0
+    x_res = 6800
+    y_res = 6800
+    x_diff = WIDTH * x_res
+    y_diff = WIDTH * y_res
 
     for point in dat_xy:
         x0 = point[0]
@@ -88,15 +90,12 @@ if __name__ == '__main__':
         x1 = point[2]
         y1 = point[3] - y_min
 
+        if x0 >= x_diff or x1 >= x_diff or y0 >= y_diff or y1 >= y_diff:
+            continue
+
         height = point[4]
 
         dat_normalized.append((x0, y0, x1, y1, height))
-
-        if x_diff < max(x0, x1):
-            x_diff = max(x0, x1)
-
-        if y_diff < max(y0, y1):
-            y_diff = max(y0, y1)
 
         x_base.append(x0)
         x_base.append(x1)
@@ -108,9 +107,6 @@ if __name__ == '__main__':
             x_filtered.append(x1)
             y_filtered.append(y0)
             y_filtered.append(y1)
-
-    x_res = x_diff / WIDTH
-    y_res = y_diff / WIDTH
 
     map = [[0 for i in range(WIDTH)] for i in range(WIDTH)]
 
@@ -129,17 +125,20 @@ if __name__ == '__main__':
 
     if WRITE_TO_FILE:
         f = open('sanfrancisco.txt', 'w')
-        f.write('%d\n' % DEPTH)
-        f.write('%d %d\n' % (round(x_res), round(y_res)))
+        content = ""
+        content += '%d\n' % DEPTH
+        content += '%d %d\n' % (round(x_res), round(y_res))
 
         for x in range(WIDTH):
             for y in range(WIDTH):
-                f.write('%d %d %d\n' % (x, y, map[x][y]))
+                content += '%d %d %d\n' % (x, y, map[x][y])
+
+        f.write(content)
         f.close()
 
     if GENERATE_OD > 0:
         od = []
-        random.seed(111)
+        random.seed(110)
         for i in range(GENERATE_OD):
             row_origin = random.randrange(WIDTH)
             col_origin = random.randrange(WIDTH)
@@ -161,14 +160,17 @@ if __name__ == '__main__':
                 map[row_destination][col_destination] = 0.5
 
             pairFile = open('SanFranciscoODs.txt', 'w')
+            pair_content = ""
             for pair in od:
-                pairFile.write('%d %d %d %d\n' % (pair[0], pair[1], pair[2], pair[3]))
+                pair_content += '%d %d %d %d\n' % (pair[0], pair[1], pair[2], pair[3])
+            pairFile.write(pair_content)
             pairFile.close()
 
     if SCATTER_PLOT:
         plt.figure(1)
         plt.scatter(x_base, y_base, color='blue')
         plt.scatter(x_filtered, y_filtered, color='red')
+        plt.show()
 
     if GRID_PLOT:
         numpy_map = np.array(map)
